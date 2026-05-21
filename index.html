@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zhuzi Design Archive</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f7f3ee;
+      color: #26221f;
+    }
+
+    .password-screen {
+      position: fixed;
+      inset: 0;
+      background: #f7f3ee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .password-card {
+      width: 90%;
+      max-width: 420px;
+      background: #fffaf4;
+      padding: 36px;
+      border-radius: 24px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .password-card h1 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .password-card p {
+      margin: 0 0 24px;
+      color: #8a7d70;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .password-card input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #ddd2c6;
+      border-radius: 999px;
+      background: #fff;
+      outline: none;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    .password-card button,
+    .admin-form button {
+      width: 100%;
+      border: none;
+      background: #2f2a25;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 999px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .password-error {
+      margin-top: 12px;
+      color: #b05a4a;
+      font-size: 13px;
+      min-height: 20px;
+    }
+
+    header {
+      padding: 56px 6vw 36px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-end;
+      border-bottom: 1px solid #e7ded4;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 68px);
+      font-weight: 400;
+      letter-spacing: -0.04em;
+    }
+
+    .brand p {
+      margin: 14px 0 0;
+      max-width: 520px;
+      color: #796e64;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav button {
+      border: 1px solid #d8cec3;
+      background: transparent;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: #423b35;
+    }
+
+    nav button.active {
+      background: #2f2a25;
+      color: white;
+      border-color: #2f2a25;
+    }
+
+    main {
+      padding: 42px 6vw 80px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      gap: 20px;
+    }
+
+    .section-title h2 {
+      font-size: 24px;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    .section-title span {
+      color: #8a7d70;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: #fffaf4;
+      border-radius: 26px;
+      overflow: hidden;
+      border: 1px solid #ebe2d8;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.035);
+    }
+
+    .image-box {
+      height: 280px;
+      background: linear-gradient(135deg, #efe5da, #fbf8f4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9a8c7e;
+      font-size: 14px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-content {
+      padding: 22px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eee3d7;
+      font-size: 12px;
+      color: #6c5e51;
+      margin-bottom: 14px;
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 21px;
+      font-weight: 400;
+    }
+
+    .info {
+      display: grid;
+      gap: 8px;
+      color: #766a60;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .note {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #eee5dc;
+      color: #4f4740;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .admin-panel {
+      margin-top: 56px;
+      background: #fffaf4;
+      border: 1px solid #ebe2d8;
+      border-radius: 28px;
+      padding: 28px;
+    }
+
+    .admin-panel h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    .admin-panel p {
+      margin: 0 0 24px;
+      color: #7d7166;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .admin-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .admin-form label {
+      display: grid;
+      gap: 8px;
+      color: #5c534b;
+      font-size: 14px;
+    }
+
+    .admin-form input,
+    .admin-form select,
+    .admin-form textarea {
+      width: 100%;
+      border: 1px solid #ddd2c6;
+      border-radius: 16px;
+      padding: 13px 14px;
+      background: white;
+      font: inherit;
+      outline: none;
+    }
+
+    .admin-form textarea,
+    .admin-form .full {
+      grid-column: 1 / -1;
+    }
+
+    .hint {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: #f2e8dd;
+      border-radius: 18px;
+      color: #74685f;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      header {
+        display: block;
+      }
+      nav {
+        justify-content: flex-start;
+        margin-top: 24px;
+      }
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .admin-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .image-box {
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="password-screen" id="passwordScreen">
+    <div class="password-card">
+      <h1>Zhuzi Design Archive</h1>
+      <p>Private furniture concept archive. Please enter password to view.</p>
+      <input id="passwordInput" type="password" placeholder="请输入访问密码" />
+      <button onclick="checkPassword()">Enter</button>
+      <div class="password-error" id="passwordError"></div>
+    </div>
+  </div>
+
+  <header>
+    <div class="brand">
+      <h1>Zhuzi Design Archive</h1>
+      <p>个人家具设计稿资料库，用于整理柜子、边几茶几、单人沙发、脚凳等产品概念，适合欧洲客户开发提案。</p>
+    </div>
+    <nav>
+      <button class="active" onclick="filterProjects('All', this)">All</button>
+      <button onclick="filterProjects('Cabinet', this)">Cabinet</button>
+      <button onclick="filterProjects('Side Table', this)">Side Table</button>
+      <button onclick="filterProjects('Armchair', this)">Armchair</button>
+      <button onclick="filterProjects('Ottoman', this)">Ottoman</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="section-title">
+      <h2>Design Projects</h2>
+      <span>Private portfolio / product development archive</span>
+    </div>
+
+    <section class="grid" id="projectGrid"></section>
+
+    <section class="admin-panel">
+      <h2>Upload Draft Area</h2>
+      <p>这是后台上传区的第一版外观。现在还只是页面框架，后面接 Supabase 后，就可以真正上传图片并保存作品。</p>
+
+      <form class="admin-form" onsubmit="addProject(event)">
+        <label>
+          产品名称
+          <input id="title" placeholder="例如：Arched Bedside Table" required />
+        </label>
+        <label>
+          分类
+          <select id="category">
+            <option>Cabinet</option>
+            <option>Side Table</option>
+            <option>Armchair</option>
+            <option>Ottoman</option>
+          </select>
+        </label>
+        <label>
+          尺寸
+          <input id="size" placeholder="例如：450 × 380 × 580 mm" />
+        </label>
+        <label>
+          材质
+          <input id="material" placeholder="例如：Painted MDF + oak veneer" />
+        </label>
+        <label class="full">
+          推荐客户
+          <input id="client" placeholder="例如：JJA / DE / moemax / XXXLUTZ" />
+        </label>
+        <label class="full">
+          设计说明
+          <textarea id="description" rows="4" placeholder="简单说明产品风格、卖点和适合场景"></textarea>
+        </label>
+        <div class="full">
+          <button type="submit">保存到当前页面预览</button>
+        </div>
+      </form>
+
+      <div class="hint">
+        当前版本：可以测试新增作品卡片，但刷新页面后不会永久保存。下一步我们会接入真正的数据库和图片上传功能。
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const SITE_PASSWORD = "zhuzi2026";
+
+    const projects = [
+      {
+        title: "Arched Bedside Table Concept",
+        category: "Cabinet",
+        size: "450 × 380 × 580 mm",
+        material: "Cream painted MDF + light oak veneer",
+        client: "JJA / DE / moemax",
+        description: "拱形抽面与浅木色台面组合，适合小户型卧室、儿童房和法国家居渠道。",
+        image: ""
+      },
+      {
+        title: "Soft Modern Side Table ST2504",
+        category: "Side Table",
+        size: "Dia 400 × H500 mm",
+        material: "Full-painted MDF, warm beige finish",
+        client: "JJA / DE / XXXLUTZ",
+        description: "圆形桌面搭配弧形挡板，雕塑感强，适合现代简约客厅和卧室边几。",
+        image: ""
+      },
+      {
+        title: "Pumpkin Lounge Chair Concept",
+        category: "Armchair",
+        size: "W780 × D760 × H720 mm",
+        material: "Textured fabric upholstery + foam filling",
+        client: "moemax / XXXLUTZ",
+        description: "圆润分瓣造型，强调包裹感和放松场景，适合欧洲软装渠道。",
+        image: ""
+      }
+    ];
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value;
+      const error = document.getElementById("passwordError");
+      if (input === SITE_PASSWORD) {
+        document.getElementById("passwordScreen").style.display = "none";
+      } else {
+        error.textContent = "密码不正确，请重新输入。";
+      }
+    }
+
+    function renderProjects(list = projects) {
+      const grid = document.getElementById("projectGrid");
+      grid.innerHTML = list.map(project => `
+        <article class="card">
+          <div class="image-box">
+            ${project.image ? `<img src="${project.image}" alt="${project.title}" />` : "Image Placeholder<br/>后面这里会显示你的设计稿图片"}
+          </div>
+          <div class="card-content">
+            <span class="tag">${project.category}</span>
+            <h3>${project.title}</h3>
+            <div class="info">
+              <div><strong>Size:</strong> ${project.size || "-"}</div>
+              <div><strong>Material:</strong> ${project.material || "-"}</div>
+              <div><strong>Client:</strong> ${project.client || "-"}</div>
+            </div>
+            <div class="note">${project.description || "暂无说明"}</div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function filterProjects(category, button) {
+      document.querySelectorAll("nav button").forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+      if (category === "All") {
+        renderProjects(projects);
+      } else {
+        renderProjects(projects.filter(project => project.category === category));
+      }
+    }
+
+    function addProject(event) {
+      event.preventDefault();
+      projects.unshift({
+        title: document.getElementById("title").value,
+        category: document.getElementById("category").value,
+        size: document.getElementById("size").value,
+        material: document.getElementById("material").value,
+        client: document.getElementById("client").value,
+        description: document.getElementById("description").value,
+        image: ""
+      });
+      renderProjects(projects);
+      event.target.reset();
+      alert("已添加到当前页面预览。下一步接后台后，可以永久保存和上传图片。");
+    }
+
+    renderProjects();
+  </script>
+</body>
+</html>
