@@ -15,28 +15,44 @@
     .password-card input { width: 100%; padding: 14px 16px; border: 1px solid #ddd2c6; border-radius: 999px; background: #fff; outline: none; font-size: 15px; margin-bottom: 14px; }
     .password-card button, .admin-form button { width: 100%; border: none; background: #2f2a25; color: white; padding: 14px 18px; border-radius: 999px; font-size: 15px; cursor: pointer; }
     .password-error { margin-top: 12px; color: #b05a4a; font-size: 13px; min-height: 20px; }
+
     header { padding: 56px 6vw 36px; display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; border-bottom: 1px solid #e7ded4; }
     .brand h1 { margin: 0; font-size: clamp(34px, 5vw, 68px); font-weight: 400; letter-spacing: -0.04em; }
     .brand p { margin: 14px 0 0; max-width: 560px; color: #796e64; line-height: 1.7; font-size: 15px; }
     nav { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
     nav button { border: 1px solid #d8cec3; background: transparent; padding: 10px 16px; border-radius: 999px; cursor: pointer; color: #423b35; }
     nav button.active { background: #2f2a25; color: white; border-color: #2f2a25; }
+
     main { padding: 42px 6vw 80px; }
     .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; gap: 20px; }
     .section-title h2 { font-size: 24px; font-weight: 400; margin: 0; }
     .section-title span { color: #8a7d70; font-size: 14px; }
     .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
     .card { background: #fffaf4; border-radius: 26px; overflow: hidden; border: 1px solid #ebe2d8; box-shadow: 0 10px 30px rgba(0,0,0,.035); }
-    .image-box { height: 300px; background: linear-gradient(135deg, #efe5da, #fbf8f4); display: flex; align-items: center; justify-content: center; color: #9a8c7e; font-size: 14px; text-align: center; padding: 20px; }
-    .image-box img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 18px; }
+
+    .image-box { height: 300px; background: #f7f3ee; display: flex; align-items: center; justify-content: center; color: #9a8c7e; font-size: 14px; text-align: center; padding: 18px; }
+    .image-box img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 18px; background: #f7f3ee; }
+
+    .thumb-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 18px 18px; background: #fffaf4; }
+    .thumb-row img { width: 58px; height: 58px; object-fit: contain; border-radius: 12px; background: #f7f3ee; border: 1px solid #eee5dc; padding: 4px; flex: 0 0 auto; }
+
     .card-content { padding: 22px; }
     .tag { display: inline-block; padding: 6px 10px; border-radius: 999px; background: #eee3d7; font-size: 12px; color: #6c5e51; margin-bottom: 14px; }
     .card h3 { margin: 0 0 12px; font-size: 21px; font-weight: 400; }
     .info { display: grid; gap: 8px; color: #766a60; font-size: 14px; line-height: 1.5; }
     .note { margin-top: 16px; padding-top: 16px; border-top: 1px solid #eee5dc; color: #4f4740; font-size: 14px; line-height: 1.7; }
+
+    .expand-button { margin-top: 18px; width: 100%; border: 1px solid #d8cec3; background: #f7f0e8; color: #3a332d; padding: 11px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; }
+    .series-panel { display: none; margin-top: 18px; padding-top: 18px; border-top: 1px solid #eee5dc; }
+    .card.expanded .series-panel { display: block; }
+    .series-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .series-grid img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; background: #f7f3ee; border: 1px solid #eee5dc; border-radius: 16px; padding: 6px; }
+    .series-title { margin: 0 0 12px; color: #6c5e51; font-size: 13px; }
+
     .card-actions { display: flex; gap: 10px; margin-top: 18px; }
     .card-actions button { flex: 1; border: 1px solid #d8cec3; background: #fffaf4; color: #3a332d; padding: 10px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; }
     .card-actions button.delete { color: #a8483b; border-color: #e3c1b9; }
+
     .admin-panel { margin-top: 56px; background: #fffaf4; border: 1px solid #ebe2d8; border-radius: 28px; padding: 28px; }
     .admin-panel h2 { margin: 0 0 10px; font-size: 24px; font-weight: 400; }
     .admin-panel p { margin: 0 0 24px; color: #7d7166; line-height: 1.7; font-size: 14px; }
@@ -49,8 +65,9 @@
     .secondary-button { background: #e9ddd1 !important; color: #3a332d !important; }
     .hint { margin-top: 18px; padding: 14px 16px; background: #f2e8dd; border-radius: 18px; color: #74685f; font-size: 13px; line-height: 1.7; }
     .status { margin-top: 14px; color: #6f6258; font-size: 14px; min-height: 22px; }
+
     @media (max-width: 900px) { header { display: block; } nav { justify-content: flex-start; margin-top: 24px; } .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-form { grid-template-columns: 1fr; } }
-    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .image-box { height: 240px; } .form-buttons { flex-direction: column; } }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .image-box { height: 260px; } .form-buttons { flex-direction: column; } }
   </style>
 </head>
 <body>
@@ -88,19 +105,20 @@
 
     <section class="admin-panel" id="uploadPanel">
       <h2 id="formTitle">Upload Draft Area</h2>
-      <p id="formDescription">上传图片并填写产品资料，保存后会进入 Supabase 数据库，并显示在上方作品列表。</p>
+      <p id="formDescription">可以一次上传多张图片。第一张会作为卡片主图，其余图片会作为同系列图片收纳在展开区域内。</p>
 
       <form class="admin-form" onsubmit="saveProject(event)">
         <input id="editingId" type="hidden" />
         <input id="existingImageUrl" type="hidden" />
+        <input id="existingGalleryUrls" type="hidden" />
 
-        <label>
-          产品图片
-          <input id="imageFile" type="file" accept="image/*" />
+        <label class="full">
+          产品图片 / 系列图片（可多选）
+          <input id="imageFile" type="file" accept="image/*" multiple />
         </label>
         <label>
           产品名称
-          <input id="title" placeholder="例如：Arched Bedside Table" required />
+          <input id="title" placeholder="例如：Arched Bedside Table Series" required />
         </label>
         <label>
           分类
@@ -135,7 +153,7 @@
       </form>
 
       <div class="hint">
-        新增功能：作品卡片下方可以点击“编辑”或“删除”。编辑时如果不重新选择图片，会保留原来的图片。
+        新增功能：图片不裁切，完整显示；同一个卡片可以上传多张系列图，点击“展开系列图片”查看。编辑时如果不重新选择图片，会保留原图片组。
       </div>
     </section>
   </main>
@@ -167,6 +185,17 @@
       return supabaseClient;
     }
 
+    function getImages(project) {
+      const images = [];
+      if (project.image_url) images.push(project.image_url);
+      if (Array.isArray(project.gallery_urls)) {
+        project.gallery_urls.forEach(url => {
+          if (url && !images.includes(url)) images.push(url);
+        });
+      }
+      return images;
+    }
+
     async function loadProjects() {
       const client = getClient();
       const grid = document.getElementById("projectGrid");
@@ -196,27 +225,51 @@
         return;
       }
 
-      grid.innerHTML = list.map(project => `
-        <article class="card">
-          <div class="image-box">
-            ${project.image_url ? `<img src="${project.image_url}" alt="${project.title || 'design project'}" />` : "Image Placeholder<br/>暂无图片"}
-          </div>
-          <div class="card-content">
-            <span class="tag">${project.category || "Uncategorized"}</span>
-            <h3>${project.title || "Untitled"}</h3>
-            <div class="info">
-              <div><strong>Size:</strong> ${project.size || "-"}</div>
-              <div><strong>Material:</strong> ${project.material || "-"}</div>
-              <div><strong>Client:</strong> ${project.client || "-"}</div>
+      grid.innerHTML = list.map(project => {
+        const images = getImages(project);
+        const mainImage = images[0] || "";
+        const hasSeries = images.length > 1;
+        const projectId = String(project.id).replace(/'/g, "\'");
+
+        return `
+          <article class="card" id="card-${projectId}">
+            <div class="image-box">
+              ${mainImage ? `<img src="${mainImage}" alt="${project.title || 'design project'}" />` : "Image Placeholder<br/>暂无图片"}
             </div>
-            <div class="note">${project.description || "暂无说明"}</div>
-            <div class="card-actions">
-              <button onclick="editProject('${project.id}')">编辑</button>
-              <button class="delete" onclick="deleteProject('${project.id}')">删除</button>
+            ${images.length ? `<div class="thumb-row">${images.map(url => `<img src="${url}" alt="series image" />`).join("")}</div>` : ""}
+            <div class="card-content">
+              <span class="tag">${project.category || "Uncategorized"}</span>
+              <h3>${project.title || "Untitled"}</h3>
+              <div class="info">
+                <div><strong>Size:</strong> ${project.size || "-"}</div>
+                <div><strong>Material:</strong> ${project.material || "-"}</div>
+                <div><strong>Client:</strong> ${project.client || "-"}</div>
+              </div>
+              <div class="note">${project.description || "暂无说明"}</div>
+
+              ${hasSeries ? `
+                <button class="expand-button" onclick="toggleSeries('${projectId}')">展开系列图片 / ${images.length} images</button>
+                <div class="series-panel">
+                  <p class="series-title">Series Images</p>
+                  <div class="series-grid">
+                    ${images.map(url => `<img src="${url}" alt="series image" />`).join("")}
+                  </div>
+                </div>
+              ` : ""}
+
+              <div class="card-actions">
+                <button onclick="editProject('${projectId}')">编辑</button>
+                <button class="delete" onclick="deleteProject('${projectId}')">删除</button>
+              </div>
             </div>
-          </div>
-        </article>
-      `).join("");
+          </article>
+        `;
+      }).join("");
+    }
+
+    function toggleSeries(id) {
+      const card = document.getElementById(`card-${id}`);
+      if (card) card.classList.toggle("expanded");
     }
 
     function filterProjects(category, button) {
@@ -226,18 +279,24 @@
       renderProjects();
     }
 
-    async function uploadImage(file) {
-      if (!file) return "";
+    async function uploadImages(files) {
       const client = getClient();
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
-      const filePath = `projects/${fileName}`;
+      const uploadedUrls = [];
+      const fileList = Array.from(files || []);
 
-      const { error: uploadError } = await client.storage.from("design-images").upload(filePath, file);
-      if (uploadError) throw uploadError;
+      for (const file of fileList) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+        const filePath = `projects/${fileName}`;
 
-      const { data } = client.storage.from("design-images").getPublicUrl(filePath);
-      return data.publicUrl;
+        const { error: uploadError } = await client.storage.from("design-images").upload(filePath, file);
+        if (uploadError) throw uploadError;
+
+        const { data } = client.storage.from("design-images").getPublicUrl(filePath);
+        uploadedUrls.push(data.publicUrl);
+      }
+
+      return uploadedUrls;
     }
 
     async function saveProject(event) {
@@ -246,12 +305,14 @@
       const status = document.getElementById("statusMessage");
       const editingId = document.getElementById("editingId").value;
       const existingImageUrl = document.getElementById("existingImageUrl").value;
+      const existingGalleryUrls = JSON.parse(document.getElementById("existingGalleryUrls").value || "[]");
 
       status.textContent = editingId ? "正在更新，请稍等..." : "正在上传，请稍等...";
 
       try {
-        const file = document.getElementById("imageFile").files[0];
-        const newImageUrl = file ? await uploadImage(file) : existingImageUrl;
+        const files = document.getElementById("imageFile").files;
+        const uploadedUrls = files && files.length ? await uploadImages(files) : [];
+        const finalImages = uploadedUrls.length ? uploadedUrls : [existingImageUrl, ...existingGalleryUrls].filter(Boolean);
 
         const projectData = {
           title: document.getElementById("title").value,
@@ -260,7 +321,8 @@
           material: document.getElementById("material").value,
           client: document.getElementById("client").value,
           description: document.getElementById("description").value,
-          image_url: newImageUrl || ""
+          image_url: finalImages[0] || "",
+          gallery_urls: finalImages.slice(1)
         };
 
         let error;
@@ -289,6 +351,7 @@
 
       document.getElementById("editingId").value = project.id;
       document.getElementById("existingImageUrl").value = project.image_url || "";
+      document.getElementById("existingGalleryUrls").value = JSON.stringify(project.gallery_urls || []);
       document.getElementById("title").value = project.title || "";
       document.getElementById("category").value = project.category || "Cabinet";
       document.getElementById("size").value = project.size || "";
@@ -298,14 +361,14 @@
       document.getElementById("imageFile").value = "";
 
       document.getElementById("formTitle").textContent = "Edit Design Project";
-      document.getElementById("formDescription").textContent = "正在编辑作品。若不重新选择图片，将保留原图片。";
+      document.getElementById("formDescription").textContent = "正在编辑作品。若不重新选择图片，将保留原图片组；若重新选择多张图片，将替换为新图片组。";
       document.getElementById("saveButton").textContent = "保存修改";
       document.getElementById("statusMessage").textContent = "";
       document.getElementById("uploadPanel").scrollIntoView({ behavior: "smooth" });
     }
 
     async function deleteProject(id) {
-      const confirmed = confirm("确定要删除这个作品吗？删除后无法在网站上恢复。图片文件可能仍保留在 Supabase Storage 中。");
+      const confirmed = confirm("确定要删除这个作品吗？删除后不会在网站上显示。");
       if (!confirmed) return;
 
       const client = getClient();
@@ -325,8 +388,9 @@
       document.querySelector(".admin-form").reset();
       document.getElementById("editingId").value = "";
       document.getElementById("existingImageUrl").value = "";
+      document.getElementById("existingGalleryUrls").value = "";
       document.getElementById("formTitle").textContent = "Upload Draft Area";
-      document.getElementById("formDescription").textContent = "上传图片并填写产品资料，保存后会进入 Supabase 数据库，并显示在上方作品列表。";
+      document.getElementById("formDescription").textContent = "可以一次上传多张图片。第一张会作为卡片主图，其余图片会作为同系列图片收纳在展开区域内。";
       document.getElementById("saveButton").textContent = "上传并保存作品";
       document.getElementById("statusMessage").textContent = "";
     }
