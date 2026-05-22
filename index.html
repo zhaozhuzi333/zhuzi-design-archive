@@ -692,18 +692,26 @@
 
   <script>
     const SITE_PASSWORD = "zhaoqing333";
+    const VIEWER_PASSWORD = "666666";
     const SUPABASE_URL = "https://qnzizwadygywroqxuszt.supabase.co";
     const SUPABASE_KEY = "sb_publishable_0R2DZniqqB2ueWAraBHNtA_FtotsnUs";
 
     let supabaseClient = null;
     let projects = [];
     let currentCategory = "All";
+    let currentUserRole = "viewer";
 
     function checkPassword() {
       const input = document.getElementById("passwordInput").value;
       const error = document.getElementById("passwordError");
 
       if (input === SITE_PASSWORD) {
+        currentUserRole = "admin";
+        document.getElementById("passwordScreen").style.display = "none";
+        document.getElementById("homeScreen").style.display = "block";
+        loadProjects();
+      } else if (input === VIEWER_PASSWORD) {
+        currentUserRole = "viewer";
         document.getElementById("passwordScreen").style.display = "none";
         document.getElementById("homeScreen").style.display = "block";
         loadProjects();
@@ -722,6 +730,11 @@
     function enterArchive(category = "All") {
       document.getElementById("homeScreen").style.display = "none";
       document.getElementById("archivePage").style.display = "block";
+
+      const uploadPanel = document.getElementById("uploadPanel");
+      if (uploadPanel) {
+        uploadPanel.style.display = currentUserRole === "admin" ? "block" : "none";
+      }
 
       currentCategory = category;
       renderProjects();
@@ -812,10 +825,12 @@
                 <div><strong>Client:</strong> ${project.client || "-"}</div>
               </div>
               <div class="note">${project.description || "暂无说明"}</div>
-              <div class="card-actions">
-                <button onclick="editProject('${projectId}')">编辑</button>
-                <button class="delete" onclick="deleteProject('${projectId}')">删除</button>
-              </div>
+              ${currentUserRole === "admin" ? `
+                <div class="card-actions">
+                  <button onclick="editProject('${projectId}')">编辑</button>
+                  <button class="delete" onclick="deleteProject('${projectId}')">删除</button>
+                </div>
+              ` : ""}
             </div>
           </article>
         `;
