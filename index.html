@@ -34,7 +34,9 @@
     .image-box img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 18px; background: #f7f3ee; }
 
     .thumb-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 18px 18px; background: #fffaf4; }
-    .thumb-row img { width: 58px; height: 58px; object-fit: contain; border-radius: 12px; background: #f7f3ee; border: 1px solid #eee5dc; padding: 4px; flex: 0 0 auto; }
+    .thumb-row img { width: 58px; height: 58px; object-fit: contain; border-radius: 12px; background: #f7f3ee; border: 1px solid #eee5dc; padding: 4px; flex: 0 0 auto; cursor: pointer; transition: .2s ease; }
+    .thumb-row img:hover { transform: translateY(-2px); border-color: #c6b6a7; }
+    .thumb-row img.active-thumb { border-color: #2f2a25; box-shadow: 0 0 0 2px rgba(47,42,37,.08); }
 
     .card-content { padding: 22px; }
     .tag { display: inline-block; padding: 6px 10px; border-radius: 999px; background: #eee3d7; font-size: 12px; color: #6c5e51; margin-bottom: 14px; }
@@ -115,6 +117,10 @@
         <label class="full">
           产品图片 / 系列图片（可多选）
           <input id="imageFile" type="file" accept="image/*" multiple />
+        </label>
+        <label class="full">
+          封面图编号
+          <input id="coverIndex" type="number" min="1" value="1" placeholder="例如：1 表示第 1 张作为封面，2 表示第 2 张作为封面" />
         </label>
         <label>
           产品名称
@@ -234,9 +240,9 @@
         return `
           <article class="card" id="card-${projectId}">
             <div class="image-box">
-              ${mainImage ? `<img src="${mainImage}" alt="${project.title || 'design project'}" />` : "Image Placeholder<br/>暂无图片"}
+              ${mainImage ? `<img id="main-image-${projectId}" src="${mainImage}" alt="${project.title || 'design project'}" />` : "Image Placeholder<br/>暂无图片"}
             </div>
-            ${images.length ? `<div class="thumb-row">${images.map(url => `<img src="${url}" alt="series image" />`).join("")}</div>` : ""}
+            ${images.length ? `<div class="thumb-row">${images.map((url, index) => `<img class="${index === 0 ? 'active-thumb' : ''}" src="${url}" alt="series image" onclick="showMainImage('${projectId}', '${url}', this)" />`).join("")}</div>` : ""}
             <div class="card-content">
               <span class="tag">${project.category || "Uncategorized"}</span>
               <h3>${project.title || "Untitled"}</h3>
@@ -270,6 +276,16 @@
     function toggleSeries(id) {
       const card = document.getElementById(`card-${id}`);
       if (card) card.classList.toggle("expanded");
+    }
+
+    function showMainImage(projectId, imageUrl, thumbElement) {
+      const mainImage = document.getElementById(`main-image-${projectId}`);
+      if (mainImage) mainImage.src = imageUrl;
+
+      const card = document.getElementById(`card-${projectId}`);
+      if (!card) return;
+      card.querySelectorAll(".thumb-row img").forEach(img => img.classList.remove("active-thumb"));
+      if (thumbElement) thumbElement.classList.add("active-thumb");
     }
 
     function filterProjects(category, button) {
@@ -312,7 +328,14 @@
       try {
         const files = document.getElementById("imageFile").files;
         const uploadedUrls = files && files.length ? await uploadImages(files) : [];
-        const finalImages = uploadedUrls.length ? uploadedUrls : [existingImageUrl, ...existingGalleryUrls].filter(Boolean);
+        let finalImages = uploadedUrls.length ? uploadedUrls : [existingImageUrl, ...existingGalleryUrls].filter(Boolean);
+
+        const coverIndexInput = Number(document.getElementById("coverIndex").value || 1);
+        const coverIndex = Math.max(0, Math.min(finalImages.length - 1, coverIndexInput - 1));
+        if (finalImages.length > 1 && coverIndex > 0) {
+          const coverImage = finalImages.splice(coverIndex, 1)[0];
+          finalImages.unshift(coverImage);
+        }
 
         const projectData = {
           title: document.getElementById("title").value,
@@ -359,9 +382,10 @@
       document.getElementById("client").value = project.client || "";
       document.getElementById("description").value = project.description || "";
       document.getElementById("imageFile").value = "";
+      document.getElementById("coverIndex").value = "1";
 
       document.getElementById("formTitle").textContent = "Edit Design Project";
-      document.getElementById("formDescription").textContent = "正在编辑作品。若不重新选择图片，将保留原图片组；若重新选择多张图片，将替换为新图片组。";
+      document.getElementById("formDescription").textContent = "正在编辑作品。若不重新选择图片，将保留原图片组；封面图编号可调整当前图片组的封面；若重新选择多张图片，将替换为新图片组。";
       document.getElementById("saveButton").textContent = "保存修改";
       document.getElementById("statusMessage").textContent = "";
       document.getElementById("uploadPanel").scrollIntoView({ behavior: "smooth" });
@@ -389,6 +413,7 @@
       document.getElementById("editingId").value = "";
       document.getElementById("existingImageUrl").value = "";
       document.getElementById("existingGalleryUrls").value = "";
+      document.getElementById("coverIndex").value = "1";
       document.getElementById("formTitle").textContent = "Upload Draft Area";
       document.getElementById("formDescription").textContent = "可以一次上传多张图片。第一张会作为卡片主图，其余图片会作为同系列图片收纳在展开区域内。";
       document.getElementById("saveButton").textContent = "上传并保存作品";
