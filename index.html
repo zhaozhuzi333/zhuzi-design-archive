@@ -878,6 +878,137 @@
     .status { margin-top: 14px; color: #6f6258; font-size: 14px; min-height: 22px; }
 
 
+    .structured-editor {
+      background: #f7f3ee;
+      border: 1px solid #ebe2d8;
+      border-radius: 24px;
+      padding: 22px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .editor-section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #e8ded3;
+    }
+
+    .editor-section-title h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      color: #302923;
+    }
+
+    .editor-section-title p {
+      margin: 6px 0 0;
+      color: #8a7d70;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .editor-section-title span {
+      white-space: nowrap;
+      font-size: 12px;
+      color: #8a7d70;
+      background: #eee3d7;
+      padding: 7px 10px;
+      border-radius: 999px;
+    }
+
+    .product-editor-title {
+      margin-top: 6px;
+    }
+
+    .planning-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .image-detail-cards {
+      display: grid;
+      gap: 14px;
+    }
+
+    .image-detail-card {
+      background: #fffaf4;
+      border: 1px solid #ebe2d8;
+      border-radius: 22px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 94px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .image-detail-preview {
+      width: 94px;
+      height: 94px;
+      border-radius: 16px;
+      background: #f0e7de;
+      border: 1px solid #e5d8cc;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9a8d80;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .image-detail-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .image-detail-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .image-detail-fields .wide {
+      grid-column: 1 / -1;
+    }
+
+    .image-detail-heading {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 2px;
+    }
+
+    .image-detail-heading strong {
+      font-size: 15px;
+      color: #302923;
+      font-weight: 500;
+    }
+
+    .image-detail-heading span {
+      font-size: 12px;
+      color: #8a7d70;
+    }
+
+    .empty-editor-note {
+      padding: 16px;
+      border-radius: 18px;
+      background: #fffaf4;
+      border: 1px dashed #d8cec3;
+      color: #8a7d70;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+
+
     /* Archive sticky header: fixed while scrolling */
     .archive-sticky-header {
       position: sticky;
@@ -976,6 +1107,9 @@
       header { display: block; }
       nav { justify-content: flex-start; margin-top: 24px; }
       .admin-form { grid-template-columns: 1fr; }
+      .planning-grid { grid-template-columns: 1fr; }
+      .image-detail-card { grid-template-columns: 1fr; }
+      .image-detail-fields { grid-template-columns: 1fr; }
 
       .detail-layout { grid-template-columns: 1fr; }
       .detail-info-panel { position: static; }
@@ -1091,7 +1225,7 @@
 
       <section class="admin-panel" id="uploadPanel">
         <h2 id="formTitle">Upload Draft Area</h2>
-        <p id="formDescription">可以一次上传多张图片。第1张作为企划案首页，填写开发理由、目标客人、目标价格段、核心卖点；第2张开始填写单品尺寸、材质、颜色和说明。</p>
+        <p id="formDescription">可以一次上传多张图片。系统会把第1张识别为企划案首页，第2张开始自动生成单品信息填写区，避免写错行。</p>
 
         <form class="admin-form" onsubmit="saveProject(event)">
           <input id="editingId" type="hidden" />
@@ -1135,14 +1269,48 @@
             设计说明
             <textarea id="description" rows="4" placeholder="简单说明产品风格、卖点和适合场景"></textarea>
           </label>
-          <label class="full">
-            每张图片对应信息（可选，一行对应一张缩略图）
-            <textarea id="imageDetails" rows="8" placeholder="第1行为企划案：系列名称｜开发理由｜目标客人｜目标价格段｜核心卖点
-例如：锥形脚坐凳系列企划｜圆润低矮坐凳适合欧洲小户型与柔和客厅场景，可作为沙发、卧室角落的配套补充品｜25-45岁，喜欢柔和家居氛围、注重舒适和造型感的年轻家庭/单身女性｜中低价位，可做走量款，也可通过面料升级做中高端版本｜圆润造型、柔软触感、易组合陈列、多色开发空间大
+          <section class="full structured-editor">
+            <div class="editor-section-title">
+              <div>
+                <h3>企划案首页信息</h3>
+                <p>对应第 1 张缩略图。这里用于说明“为什么开发这个系列”。</p>
+              </div>
+              <span>Image 1 / Planning</span>
+            </div>
 
-第2行开始为单品信息：产品名｜尺寸｜材质｜颜色｜说明
-例如：小圆脚凳｜Dia500 x H400 mm｜Teddy Fleece｜Ivory｜圆润矮脚造型，适合搭配单人沙发或卧室休闲角。"></textarea>
-          </label>
+            <div class="planning-grid">
+              <label>
+                开发理由
+                <textarea id="planningReason" rows="3" placeholder="例如：圆润软包家具适合欧洲小户型、公寓和休闲角场景，椅凳组合可提升陈列完整度和客单价。"></textarea>
+              </label>
+              <label>
+                目标客人
+                <textarea id="planningTargetCustomer" rows="3" placeholder="例如：25-45 岁欧洲年轻家庭、独居女性和中产公寓用户，偏好柔和、温暖、有氛围感的家居空间。"></textarea>
+              </label>
+              <label>
+                目标价格段
+                <textarea id="planningTargetPrice" rows="3" placeholder="例如：中价位至中高价位，单椅 €199-399，脚凳 €79-169，可根据客户渠道调整。"></textarea>
+              </label>
+              <label>
+                核心卖点
+                <textarea id="planningSellingPoint" rows="3" placeholder="例如：圆润分块造型、柔软包裹感、椅凳成套销售、多色系列开发空间大。"></textarea>
+              </label>
+            </div>
+
+            <div class="editor-section-title product-editor-title">
+              <div>
+                <h3>系列单品信息</h3>
+                <p>对应第 2 张及后续缩略图。选择图片后，这里会自动出现每张图的填写区域。</p>
+              </div>
+              <span>Image 2+ / Products</span>
+            </div>
+
+            <div id="imageDetailCards" class="image-detail-cards">
+              <div class="empty-editor-note">请先选择产品图片，或点击已有作品的“编辑”，系统会自动生成对应的单品信息填写区。</div>
+            </div>
+
+            <textarea id="imageDetails" style="display:none;"></textarea>
+          </section>
           <div class="full form-buttons">
             <button id="saveButton" type="submit">上传并保存作品</button>
             <button class="secondary-button" type="button" onclick="resetForm()">取消编辑 / 清空</button>
@@ -1151,7 +1319,7 @@
         </form>
 
         <div class="hint">
-          当前版本：支持密码访问、主界面、分类进入、点击卡片进入详情页、第1张图显示企划案、后续缩略图显示单品信息、上传、编辑、删除作品卡片。
+          当前版本：支持密码访问、主界面、分类进入、点击卡片进入详情页、结构化企划案编辑、每张缩略图独立单品信息、上传、编辑、删除作品卡片。
         </div>
       </section>
     </main>
@@ -1474,10 +1642,159 @@
       }
     }
 
+    function getFormImageList() {
+      const fileInput = document.getElementById("imageFile");
+      const files = fileInput && fileInput.files ? Array.from(fileInput.files) : [];
+
+      if (files.length) {
+        return files.map(file => ({
+          name: file.name,
+          url: URL.createObjectURL(file),
+          source: "new"
+        }));
+      }
+
+      const existingImageUrl = document.getElementById("existingImageUrl").value;
+      const existingGalleryUrls = JSON.parse(document.getElementById("existingGalleryUrls").value || "[]");
+
+      return [existingImageUrl, ...existingGalleryUrls].filter(Boolean).map((url, index) => ({
+        name: `已上传图片 ${index + 1}`,
+        url,
+        source: "existing"
+      }));
+    }
+
+    function populatePlanningFields(details) {
+      const first = Array.isArray(details) && details.length ? details[0] : {};
+      document.getElementById("planningReason").value = first.developmentReason || first.reason || first.why || "";
+      document.getElementById("planningTargetCustomer").value = first.targetCustomer || first.customer || first.target || "";
+      document.getElementById("planningTargetPrice").value = first.targetPrice || first.priceRange || first.price || "";
+      document.getElementById("planningSellingPoint").value = first.coreSellingPoint || first.sellingPoint || first.keySellingPoint || first.description || "";
+    }
+
+    function renderImageDetailEditor(details = []) {
+      const container = document.getElementById("imageDetailCards");
+      if (!container) return;
+
+      const images = getFormImageList();
+
+      if (!images.length) {
+        container.innerHTML = `<div class="empty-editor-note">请先选择产品图片，或点击已有作品的“编辑”，系统会自动生成对应的单品信息填写区。</div>`;
+        return;
+      }
+
+      if (images.length === 1) {
+        container.innerHTML = `<div class="empty-editor-note">当前只有 1 张图片，这张图会作为企划案首页。若需要填写单品尺寸、材质和颜色，请继续上传第 2 张及后续产品图。</div>`;
+        return;
+      }
+
+      container.innerHTML = images.slice(1).map((image, offset) => {
+        const index = offset + 1;
+        const item = details[index] || {};
+
+        return `
+          <div class="image-detail-card" data-image-index="${index}">
+            <div class="image-detail-preview">
+              ${image.url ? `<img src="${image.url}" alt="image ${index + 1}" />` : `Image ${index + 1}`}
+            </div>
+            <div class="image-detail-fields">
+              <div class="image-detail-heading">
+                <strong>图片 ${index + 1} / 单品信息</strong>
+                <span>${image.name || ""}</span>
+              </div>
+              <label>
+                产品名称
+                <input class="detail-input-title" value="${escapeAttribute(item.title || "")}" placeholder="例如：圆润绗缝单人休闲椅" />
+              </label>
+              <label>
+                Size
+                <input class="detail-input-size" value="${escapeAttribute(item.size || "")}" placeholder="例如：W820 × D800 × H760 mm" />
+              </label>
+              <label>
+                Material
+                <input class="detail-input-material" value="${escapeAttribute(item.material || "")}" placeholder="例如：Teddy Fleece + High-density foam" />
+              </label>
+              <label>
+                Color
+                <input class="detail-input-color" value="${escapeAttribute(item.color || item.colour || "")}" placeholder="例如：Caramel Brown" />
+              </label>
+              <label class="wide">
+                Description
+                <textarea class="detail-input-description" rows="3" placeholder="例如：包裹式圆弧靠背与厚软坐垫结合，适合作为客厅休闲椅。">${escapeTextarea(item.description || "")}</textarea>
+              </label>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
     function parseImageDetailsInput() {
-      const textarea = document.getElementById("imageDetails");
-      const text = textarea ? textarea.value.trim() : "";
-      if (!text) return [];
+      const images = getFormImageList();
+
+      if (!images.length) return [];
+
+      const details = [{
+        title: `${document.getElementById("title").value || "系列"}企划案`,
+        developmentReason: document.getElementById("planningReason").value.trim(),
+        targetCustomer: document.getElementById("planningTargetCustomer").value.trim(),
+        targetPrice: document.getElementById("planningTargetPrice").value.trim(),
+        coreSellingPoint: document.getElementById("planningSellingPoint").value.trim()
+      }];
+
+      const productCards = Array.from(document.querySelectorAll(".image-detail-card"));
+      productCards.forEach(card => {
+        details.push({
+          title: card.querySelector(".detail-input-title")?.value.trim() || "",
+          size: card.querySelector(".detail-input-size")?.value.trim() || "",
+          material: card.querySelector(".detail-input-material")?.value.trim() || "",
+          color: card.querySelector(".detail-input-color")?.value.trim() || "",
+          description: card.querySelector(".detail-input-description")?.value.trim() || ""
+        });
+      });
+
+      return details;
+    }
+
+    function formatImageDetailsForForm(details) {
+      if (!Array.isArray(details) || !details.length) return "";
+      return details.map((item, index) => {
+        if (index === 0) {
+          return [
+            item.title || "",
+            item.developmentReason || item.reason || item.why || "",
+            item.targetCustomer || item.customer || item.target || "",
+            item.targetPrice || item.priceRange || item.price || "",
+            item.coreSellingPoint || item.sellingPoint || item.keySellingPoint || item.description || ""
+          ].join("｜");
+        }
+
+        return [
+          item.title || "",
+          item.size || "",
+          item.material || "",
+          item.color || item.colour || "",
+          item.description || ""
+        ].join("｜");
+      }).join("\n");
+    }
+
+    function escapeAttribute(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function escapeTextarea(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function parseLegacyImageDetailsText(text) {
+      if (!text || !text.trim()) return [];
 
       return text.split("\n").map(line => line.trim()).filter(Boolean).map((line, index) => {
         const parts = line.split(/[｜|]/).map(part => part.trim());
@@ -1502,27 +1819,40 @@
       });
     }
 
-    function formatImageDetailsForForm(details) {
-      if (!Array.isArray(details) || !details.length) return "";
-      return details.map((item, index) => {
-        if (index === 0) {
-          return [
-            item.title || "",
-            item.developmentReason || item.reason || item.why || "",
-            item.targetCustomer || item.customer || item.target || "",
-            item.targetPrice || item.priceRange || item.price || "",
-            item.coreSellingPoint || item.sellingPoint || item.keySellingPoint || item.description || ""
-          ].join("｜");
-        }
+    function syncLegacyDetailsTextarea() {
+      const hidden = document.getElementById("imageDetails");
+      if (!hidden) return;
+      hidden.value = formatImageDetailsForForm(parseImageDetailsInput());
+    }
 
-        return [
-          item.title || "",
-          item.size || "",
-          item.material || "",
-          item.color || item.colour || "",
-          item.description || ""
-        ].join("｜");
-      }).join("\n");
+    function setupStructuredEditorEvents() {
+      const imageFile = document.getElementById("imageFile");
+      const titleInput = document.getElementById("title");
+      const coverInput = document.getElementById("coverIndex");
+
+      if (imageFile) {
+        imageFile.addEventListener("change", () => {
+          const existingDetails = parseLegacyImageDetailsText(document.getElementById("imageDetails").value || "");
+          renderImageDetailEditor(existingDetails);
+        });
+      }
+
+      [titleInput, coverInput].forEach(input => {
+        if (input) input.addEventListener("input", syncLegacyDetailsTextarea);
+      });
+
+      ["planningReason", "planningTargetCustomer", "planningTargetPrice", "planningSellingPoint"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("input", syncLegacyDetailsTextarea);
+      });
+
+      document.addEventListener("input", (event) => {
+        if (event.target && event.target.closest && event.target.closest(".image-detail-card")) {
+          syncLegacyDetailsTextarea();
+        }
+      });
+
+      renderImageDetailEditor([]);
     }
 
     function openProjectDetail(id) {
@@ -1747,12 +2077,15 @@
       document.getElementById("material").value = project.material || "";
       document.getElementById("client").value = project.client || "";
       document.getElementById("description").value = project.description || "";
-      document.getElementById("imageDetails").value = formatImageDetailsForForm(getImageDetails(project));
+      const projectImageDetails = getImageDetails(project);
+      document.getElementById("imageDetails").value = formatImageDetailsForForm(projectImageDetails);
+      populatePlanningFields(projectImageDetails);
       document.getElementById("imageFile").value = "";
       document.getElementById("coverIndex").value = "1";
+      renderImageDetailEditor(projectImageDetails);
 
       document.getElementById("formTitle").textContent = "Edit Design Project";
-      document.getElementById("formDescription").textContent = "正在编辑作品。若不重新选择图片，将保留原图片组；第1行填写企划案，后续每一行对应后续缩略图单品信息。";
+      document.getElementById("formDescription").textContent = "正在编辑作品。若不重新选择图片，将保留原图片组；下方会按图片顺序显示企划案与单品信息填写区。";
       document.getElementById("saveButton").textContent = "保存修改";
       document.getElementById("statusMessage").textContent = "";
       document.getElementById("uploadPanel").scrollIntoView({ behavior: "smooth" });
@@ -1781,13 +2114,16 @@
       document.getElementById("existingImageUrl").value = "";
       document.getElementById("existingGalleryUrls").value = "";
       document.getElementById("imageDetails").value = "";
+      populatePlanningFields([]);
+      renderImageDetailEditor([]);
       document.getElementById("coverIndex").value = "1";
       document.getElementById("formTitle").textContent = "Upload Draft Area";
-      document.getElementById("formDescription").textContent = "可以一次上传多张图片。第1张作为企划案首页，填写开发理由、目标客人、目标价格段、核心卖点；第2张开始填写单品尺寸、材质、颜色和说明。";
+      document.getElementById("formDescription").textContent = "可以一次上传多张图片。系统会把第1张识别为企划案首页，第2张开始自动生成单品信息填写区，避免写错行。";
       document.getElementById("saveButton").textContent = "上传并保存作品";
       document.getElementById("statusMessage").textContent = "";
     }
 
+    setupStructuredEditorEvents();
     setupArchiveHeaderParallax();
   </script>
 </body>
