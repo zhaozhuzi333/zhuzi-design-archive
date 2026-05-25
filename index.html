@@ -1077,7 +1077,7 @@
     <main>
       <div class="section-title">
         <h2>Design Projects</h2>
-     
+        
       </div>
 
       <section class="grid" id="projectGrid"></section>
@@ -1091,7 +1091,7 @@
 
       <section class="admin-panel" id="uploadPanel">
         <h2 id="formTitle">Upload Draft Area</h2>
-        <p id="formDescription">可以一次上传多张图片。第一张会作为卡片主图，其余图片会作为同系列缩略图；在“每张图片对应信息”中按行填写，详情页点击不同缩略图会显示不同信息。</p>
+        <p id="formDescription">可以一次上传多张图片。第1张作为企划案首页，填写开发理由、目标客人、目标价格段、核心卖点；第2张开始填写单品尺寸、材质、颜色和说明。</p>
 
         <form class="admin-form" onsubmit="saveProject(event)">
           <input id="editingId" type="hidden" />
@@ -1137,9 +1137,11 @@
           </label>
           <label class="full">
             每张图片对应信息（可选，一行对应一张缩略图）
-            <textarea id="imageDetails" rows="7" placeholder="格式：标题｜尺寸｜材质｜颜色｜推荐客户｜说明
-例如：场景图｜锥形脚坐凳系列｜雪尼尔+实木｜焦糖/米白/橄榄绿｜DE / moemax｜适合柔和客厅场景
-例如：小脚凳｜Dia420 x H380 mm｜雪尼尔+实木脚｜米白｜DE｜圆润矮脚，适合搭配单人沙发"></textarea>
+            <textarea id="imageDetails" rows="8" placeholder="第1行为企划案：系列名称｜开发理由｜目标客人｜目标价格段｜核心卖点
+例如：锥形脚坐凳系列企划｜圆润低矮坐凳适合欧洲小户型与柔和客厅场景，可作为沙发、卧室角落的配套补充品｜25-45岁，喜欢柔和家居氛围、注重舒适和造型感的年轻家庭/单身女性｜中低价位，可做走量款，也可通过面料升级做中高端版本｜圆润造型、柔软触感、易组合陈列、多色开发空间大
+
+第2行开始为单品信息：产品名｜尺寸｜材质｜颜色｜说明
+例如：小圆脚凳｜Dia500 x H400 mm｜Teddy Fleece｜Ivory｜圆润矮脚造型，适合搭配单人沙发或卧室休闲角。"></textarea>
           </label>
           <div class="full form-buttons">
             <button id="saveButton" type="submit">上传并保存作品</button>
@@ -1149,7 +1151,7 @@
         </form>
 
         <div class="hint">
-          当前版本：支持密码访问、主界面、分类进入、图片完整显示、多图缩略图切换、封面图编号、上传、编辑、删除作品卡片。
+          当前版本：支持密码访问、主界面、分类进入、点击卡片进入详情页、第1张图显示企划案、后续缩略图显示单品信息、上传、编辑、删除作品卡片。
         </div>
       </section>
     </main>
@@ -1395,16 +1397,39 @@
     function getDetailForImage(project, index) {
       const details = getImageDetails(project);
       const item = details[index] || {};
-      const fallbackTitle = index === 0 ? (project.title || "Untitled") : `${project.title || "Product"} ${index + 1}`;
+
+      if (index === 0) {
+        return {
+          mode: "planning",
+          title: item.title || `${project.title || "Untitled"} 企划案`,
+          category: project.category || "Uncategorized",
+          subtitle: "Planning concept / product proposal",
+          label1: "开发理由",
+          value1: item.developmentReason || item.reason || item.why || project.description || "-",
+          label2: "目标客人",
+          value2: item.targetCustomer || item.customer || item.target || project.client || "-",
+          label3: "目标价格段",
+          value3: item.targetPrice || item.priceRange || item.price || "-",
+          label4: "核心卖点",
+          value4: item.coreSellingPoint || item.sellingPoint || item.keySellingPoint || item.description || "-",
+          description: ""
+        };
+      }
 
       return {
-        title: item.title || fallbackTitle,
-        category: item.category || project.category || "Uncategorized",
-        size: item.size || project.size || "-",
-        material: item.material || project.material || "-",
-        color: item.color || item.colour || "-",
-        client: item.client || project.client || "-",
-        description: item.description || project.description || "暂无说明"
+        mode: "product",
+        title: item.title || `${project.title || "Product"} ${index}`,
+        category: project.category || "Uncategorized",
+        subtitle: `Image ${index + 1} of ${Math.max(getImages(project).length, 1)} / product detail`,
+        label1: "Size",
+        value1: item.size || project.size || "-",
+        label2: "Material",
+        value2: item.material || project.material || "-",
+        label3: "Color",
+        value3: item.color || item.colour || "-",
+        label4: "Description",
+        value4: item.description || project.description || "暂无说明",
+        description: ""
       };
     }
 
@@ -1412,27 +1437,35 @@
       const project = projects.find(item => String(item.id) === String(projectId));
       if (!project) return;
       const detail = getDetailForImage(project, index);
-      const images = getImages(project);
       const safeId = String(projectId).replace(/'/g, "\\'");
 
       const panel = document.getElementById(`detail-info-panel-${safeId}`);
       const categoryEl = document.getElementById(`detail-category-${safeId}`);
       const titleEl = document.getElementById(`detail-title-${safeId}`);
       const subtitleEl = document.getElementById(`detail-subtitle-${safeId}`);
-      const sizeEl = document.getElementById(`detail-size-${safeId}`);
-      const materialEl = document.getElementById(`detail-material-${safeId}`);
-      const colorEl = document.getElementById(`detail-color-${safeId}`);
-      const clientEl = document.getElementById(`detail-client-${safeId}`);
+      const label1El = document.getElementById(`detail-label-1-${safeId}`);
+      const value1El = document.getElementById(`detail-value-1-${safeId}`);
+      const label2El = document.getElementById(`detail-label-2-${safeId}`);
+      const value2El = document.getElementById(`detail-value-2-${safeId}`);
+      const label3El = document.getElementById(`detail-label-3-${safeId}`);
+      const value3El = document.getElementById(`detail-value-3-${safeId}`);
+      const label4El = document.getElementById(`detail-label-4-${safeId}`);
+      const value4El = document.getElementById(`detail-value-4-${safeId}`);
       const descriptionEl = document.getElementById(`detail-description-${safeId}`);
 
       if (categoryEl) categoryEl.textContent = detail.category;
       if (titleEl) titleEl.textContent = detail.title;
-      if (subtitleEl) subtitleEl.textContent = `Image ${index + 1} of ${Math.max(images.length, 1)} / product detail`;
-      if (sizeEl) sizeEl.textContent = detail.size;
-      if (materialEl) materialEl.textContent = detail.material;
-      if (colorEl) colorEl.textContent = detail.color;
-      if (clientEl) clientEl.textContent = detail.client;
-      if (descriptionEl) descriptionEl.textContent = detail.description;
+      if (subtitleEl) subtitleEl.textContent = detail.subtitle;
+      if (label1El) label1El.textContent = detail.label1;
+      if (value1El) value1El.textContent = detail.value1;
+      if (label2El) label2El.textContent = detail.label2;
+      if (value2El) value2El.textContent = detail.value2;
+      if (label3El) label3El.textContent = detail.label3;
+      if (value3El) value3El.textContent = detail.value3;
+      if (label4El) label4El.textContent = detail.label4;
+      if (value4El) value4El.textContent = detail.value4;
+      if (descriptionEl) descriptionEl.textContent = detail.description || "";
+      if (descriptionEl) descriptionEl.style.display = detail.description ? "block" : "none";
 
       if (panel) {
         panel.classList.remove("updating");
@@ -1446,29 +1479,50 @@
       const text = textarea ? textarea.value.trim() : "";
       if (!text) return [];
 
-      return text.split("\n").map(line => line.trim()).filter(Boolean).map(line => {
+      return text.split("\n").map(line => line.trim()).filter(Boolean).map((line, index) => {
         const parts = line.split(/[｜|]/).map(part => part.trim());
+
+        if (index === 0) {
+          return {
+            title: parts[0] || "",
+            developmentReason: parts[1] || "",
+            targetCustomer: parts[2] || "",
+            targetPrice: parts[3] || "",
+            coreSellingPoint: parts.slice(4).join("｜") || ""
+          };
+        }
+
         return {
           title: parts[0] || "",
           size: parts[1] || "",
           material: parts[2] || "",
           color: parts[3] || "",
-          client: parts[4] || "",
-          description: parts.slice(5).join("｜") || ""
+          description: parts.slice(4).join("｜") || ""
         };
       });
     }
 
     function formatImageDetailsForForm(details) {
       if (!Array.isArray(details) || !details.length) return "";
-      return details.map(item => [
-        item.title || "",
-        item.size || "",
-        item.material || "",
-        item.color || item.colour || "",
-        item.client || "",
-        item.description || ""
-      ].join("｜")).join("\n");
+      return details.map((item, index) => {
+        if (index === 0) {
+          return [
+            item.title || "",
+            item.developmentReason || item.reason || item.why || "",
+            item.targetCustomer || item.customer || item.target || "",
+            item.targetPrice || item.priceRange || item.price || "",
+            item.coreSellingPoint || item.sellingPoint || item.keySellingPoint || item.description || ""
+          ].join("｜");
+        }
+
+        return [
+          item.title || "",
+          item.size || "",
+          item.material || "",
+          item.color || item.colour || "",
+          item.description || ""
+        ].join("｜");
+      }).join("\n");
     }
 
     function openProjectDetail(id) {
@@ -1506,24 +1560,24 @@
 
             <div class="detail-specs">
               <div class="detail-spec-row">
-                <div class="detail-spec-label">Size</div>
-                <div class="detail-spec-value" id="detail-size-${safeId}">${selectedDetail.size}</div>
+                <div class="detail-spec-label" id="detail-label-1-${safeId}">${selectedDetail.label1}</div>
+                <div class="detail-spec-value" id="detail-value-1-${safeId}">${selectedDetail.value1}</div>
               </div>
               <div class="detail-spec-row">
-                <div class="detail-spec-label">Material</div>
-                <div class="detail-spec-value" id="detail-material-${safeId}">${selectedDetail.material}</div>
+                <div class="detail-spec-label" id="detail-label-2-${safeId}">${selectedDetail.label2}</div>
+                <div class="detail-spec-value" id="detail-value-2-${safeId}">${selectedDetail.value2}</div>
               </div>
               <div class="detail-spec-row">
-                <div class="detail-spec-label">Color</div>
-                <div class="detail-spec-value" id="detail-color-${safeId}">${selectedDetail.color}</div>
+                <div class="detail-spec-label" id="detail-label-3-${safeId}">${selectedDetail.label3}</div>
+                <div class="detail-spec-value" id="detail-value-3-${safeId}">${selectedDetail.value3}</div>
               </div>
               <div class="detail-spec-row">
-                <div class="detail-spec-label">Client</div>
-                <div class="detail-spec-value" id="detail-client-${safeId}">${selectedDetail.client}</div>
+                <div class="detail-spec-label" id="detail-label-4-${safeId}">${selectedDetail.label4}</div>
+                <div class="detail-spec-value" id="detail-value-4-${safeId}">${selectedDetail.value4}</div>
               </div>
             </div>
 
-            <div class="detail-description" id="detail-description-${safeId}">${selectedDetail.description}</div>
+            <div class="detail-description" id="detail-description-${safeId}" style="display:${selectedDetail.description ? 'block' : 'none'};">${selectedDetail.description || ''}</div>
 
             ${currentUserRole === "admin" ? `
               <div class="detail-actions">
@@ -1698,7 +1752,7 @@
       document.getElementById("coverIndex").value = "1";
 
       document.getElementById("formTitle").textContent = "Edit Design Project";
-      document.getElementById("formDescription").textContent = "正在编辑作品。若不重新选择图片，将保留原图片组；封面图编号可调整当前图片组的封面；若重新选择多张图片，将替换为新图片组。";
+      document.getElementById("formDescription").textContent = "正在编辑作品。若不重新选择图片，将保留原图片组；第1行填写企划案，后续每一行对应后续缩略图单品信息。";
       document.getElementById("saveButton").textContent = "保存修改";
       document.getElementById("statusMessage").textContent = "";
       document.getElementById("uploadPanel").scrollIntoView({ behavior: "smooth" });
@@ -1729,7 +1783,7 @@
       document.getElementById("imageDetails").value = "";
       document.getElementById("coverIndex").value = "1";
       document.getElementById("formTitle").textContent = "Upload Draft Area";
-      document.getElementById("formDescription").textContent = "可以一次上传多张图片。第一张会作为卡片主图，其余图片会作为同系列缩略图；在“每张图片对应信息”中按行填写，详情页点击不同缩略图会显示不同信息。";
+      document.getElementById("formDescription").textContent = "可以一次上传多张图片。第1张作为企划案首页，填写开发理由、目标客人、目标价格段、核心卖点；第2张开始填写单品尺寸、材质、颜色和说明。";
       document.getElementById("saveButton").textContent = "上传并保存作品";
       document.getElementById("statusMessage").textContent = "";
     }
